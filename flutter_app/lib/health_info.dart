@@ -36,85 +36,127 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: const Text(
-          'Informations de Santé',
+          'Health Tracker',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.teal,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              // Weight Input
-              _buildTextField(
-                controller: _weightController,
-                label: "Poids (kg)",
-                icon: Icons.monitor_weight,
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height -
+                AppBar().preferredSize.height -
+                MediaQuery.of(context).padding.top,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFA7FFEB), Color(0xFF1DE9B6)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const SizedBox(height: 20),
-              // Height Input
-              _buildTextField(
-                controller: _heightController,
-                label: "Taille (cm)",
-                icon: Icons.height,
-              ),
-              const SizedBox(height: 20),
-              // Goal Input
-              _buildTextField(
-                controller: _goalController,
-                label: "Objectif de poids (kg)",
-                icon: Icons.flag,
-              ),
-              const SizedBox(height: 30),
-              // Display Error Message if Any
-              if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
-              // Save Button
-              _isLoading
-                  ? const CircularProgressIndicator(
-                      valueColor:
-                          AlwaysStoppedAnimation<Color>(Colors.pinkAccent),
-                    )
-                  : Column(
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 40),
+                  // Header Image and Title
+                  Center(
+                    child: Column(
                       children: [
-                        SizedBox(
-                          width: double.infinity,
+                        Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Colors.white, Colors.teal],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12.withOpacity(0.2),
+                                blurRadius: 15,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.health_and_safety,
+                            size: 60,
+                            color: Colors.teal,
+                          ),
+                        ),
+                        const SizedBox(height: 30),
+                      ],
+                    ),
+                  ),
+                  // Input Fields
+                  _buildTextField(
+                    controller: _weightController,
+                    label: "Poids (kg)",
+                    icon: Icons.monitor_weight,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _heightController,
+                    label: "Taille (cm)",
+                    icon: Icons.height,
+                  ),
+                  const SizedBox(height: 20),
+                  _buildTextField(
+                    controller: _goalController,
+                    label: "Objectif de poids (kg)",
+                    icon: Icons.flag,
+                  ),
+                  const SizedBox(height: 30),
+                  // Display Error Message if Any
+                  if (_errorMessage != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20),
+                      child: Text(
+                        _errorMessage!,
+                        style: const TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  // Save Button
+                  _isLoading
+                      ? const CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        )
+                      : SizedBox(
+                          width: 300,
+                          height: 50,
                           child: ElevatedButton(
                             onPressed: _saveHealthInfo,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.pinkAccent,
+                              backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(25),
                               ),
-                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              elevation: 10,
                             ),
                             child: const Text(
                               "Enregistrer",
                               style: TextStyle(
-                                color: Colors.white,
                                 fontSize: 18,
+                                color: Colors.teal,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-            ],
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -128,24 +170,23 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
   }) {
     return TextField(
       controller: controller,
-      keyboardType: label == "Type d'activité (ex: marche, course)"
-          ? TextInputType.text
-          : TextInputType.number,
+      keyboardType: TextInputType.number,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
         filled: true,
-        fillColor: Colors.white.withOpacity(0.8),
+        fillColor: Colors.white.withOpacity(0.9),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(25),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.pinkAccent),
+          borderRadius: BorderRadius.circular(25),
+          borderSide: const BorderSide(color: Colors.white),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.pinkAccent, width: 2),
+          borderRadius: BorderRadius.circular(25),
+          borderSide: const BorderSide(color: Colors.teal, width: 2),
         ),
       ),
     );

@@ -1,5 +1,5 @@
-/*import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -113,31 +113,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const CircularProgressIndicator();
         }
         final docs = snapshot.data!.docs;
-        final spots = docs.asMap().entries.map((entry) {
+        final data = docs.asMap().entries.map((entry) {
           final index = entry.key;
-          final data = entry.value.data() as Map<String, dynamic>;
-          return FlSpot(index.toDouble(), (data['weight'] ?? 0).toDouble());
+          final weight =
+              (entry.value.data() as Map<String, dynamic>)['weight'] ?? 0;
+          return ChartSampleData(x: index.toDouble(), y: weight.toDouble());
         }).toList();
-        return LineChart(
-          LineChartData(
-            gridData: FlGridData(show: false),
-            titlesData: FlTitlesData(show: false),
-            borderData: FlBorderData(
-              show: true,
-              border: Border.all(color: Colors.pinkAccent),
+
+        return SfCartesianChart(
+          primaryXAxis: NumericAxis(),
+          title: ChartTitle(text: 'Poids sur la période'),
+          series: <ChartSeries<ChartSampleData, double>>[
+            LineSeries<ChartSampleData, double>(
+              dataSource: data,
+              xValueMapper: (ChartSampleData data, _) => data.x,
+              yValueMapper: (ChartSampleData data, _) => data.y,
+              color: Colors.pinkAccent,
             ),
-            lineBarsData: [
-              LineChartBarData(
-                isCurved: true,
-                color: Colors.pinkAccent,
-                barWidth: 3,
-                isStrokeCapRound: true,
-                dotData: FlDotData(show: false),
-                belowBarData: BarAreaData(show: false),
-                spots: spots,
-              ),
-            ],
-          ),
+          ],
         );
       },
     );
@@ -157,32 +150,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return const CircularProgressIndicator();
         }
         final docs = snapshot.data!.docs;
-        final bars = docs.asMap().entries.map((entry) {
+        final data = docs.asMap().entries.map((entry) {
           final index = entry.key;
-          final data = entry.value.data() as Map<String, dynamic>;
-          return BarChartGroupData(
-            x: index,
-            barRods: [
-              BarChartRodData(
-                toY: (data['calories_burned'] ?? 0).toDouble(),
-                color: Colors.pinkAccent,
-                width: 10, // Vous pouvez ajuster la largeur du rod ici
-                borderRadius:
-                    BorderRadius.circular(4), // Pour ajouter un bord arrondi
-              ),
-            ],
-          );
+          final calories =
+              (entry.value.data() as Map<String, dynamic>)['calories_burned'] ??
+                  0;
+          return ChartSampleData(x: index.toDouble(), y: calories.toDouble());
         }).toList();
-        return BarChart(
-          BarChartData(
-            gridData: FlGridData(show: false),
-            titlesData: FlTitlesData(show: false),
-            borderData: FlBorderData(
-              show: true,
-              border: Border.all(color: Colors.pinkAccent),
+
+        return SfCartesianChart(
+          primaryXAxis: NumericAxis(),
+          title: ChartTitle(text: 'Calories brûlées sur la période'),
+          series: <ChartSeries<ChartSampleData, double>>[
+            ColumnSeries<ChartSampleData, double>(
+              dataSource: data,
+              xValueMapper: (ChartSampleData data, _) => data.x,
+              yValueMapper: (ChartSampleData data, _) => data.y,
+              color: Colors.pinkAccent,
             ),
-            barGroups: bars,
-          ),
+          ],
         );
       },
     );
@@ -204,31 +190,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
         final data = snapshot.data!.docs.first.data() as Map<String, dynamic>;
         final total =
             (data['proteins'] ?? 0) + (data['carbs'] ?? 0) + (data['fat'] ?? 0);
-        return PieChart(
-          PieChartData(
-            sections: [
-              PieChartSectionData(
-                value: (data['proteins'] ?? 0).toDouble(),
-                color: Colors.blue,
-                title: 'Protéines',
-              ),
-              PieChartSectionData(
-                value: (data['carbs'] ?? 0).toDouble(),
-                color: Colors.orange,
-                title: 'Glucides',
-              ),
-              PieChartSectionData(
-                value: (data['fat'] ?? 0).toDouble(),
-                color: Colors.red,
-                title: 'Lipides',
-              ),
-            ],
-            sectionsSpace: 2,
-            centerSpaceRadius: 40,
-          ),
+
+        return SfCircularChart(
+          title: ChartTitle(text: 'Répartition nutritionnelle'),
+          series: <CircularSeries>[
+            PieSeries<_PieChartData, String>(
+              dataSource: [
+                _PieChartData('Protéines', (data['proteins'] ?? 0).toDouble()),
+                _PieChartData('Glucides', (data['carbs'] ?? 0).toDouble()),
+                _PieChartData('Lipides', (data['fat'] ?? 0).toDouble()),
+              ],
+              xValueMapper: (_PieChartData data, _) => data.category,
+              yValueMapper: (_PieChartData data, _) => data.value,
+              dataLabelSettings: const DataLabelSettings(isVisible: true),
+            )
+          ],
         );
       },
     );
   }
 }
-*/
+
+class ChartSampleData {
+  final double x;
+  final double y;
+  ChartSampleData({required this.x, required this.y});
+}
+
+class _PieChartData {
+  final String category;
+  final double value;
+  _PieChartData(this.category, this.value);
+}

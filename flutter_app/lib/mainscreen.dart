@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/health_info.dart';
 import 'package:flutter_app/activity_tracking.dart';
 import 'package:flutter_app/nutrition_tracking.dart';
+import 'package:flutter_app/dashboard.dart';
 //import 'package:flutter_app/recommendations.dart'; // Importer la nouvelle page de recommandations
 
 class MainScreen extends StatefulWidget {
@@ -19,6 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     const HealthInfoScreen(),
     const ActivityTrackingScreen(),
     const NutritionTrackingScreen(),
+    const DashboardScreen(),
     //const RecommendationsScreen(), // Nouvelle page de recommandations
   ];
 
@@ -33,7 +35,7 @@ class _MainScreenState extends State<MainScreen> {
             _currentIndex = index;
           });
         },
-        selectedItemColor: Colors.pinkAccent,
+        selectedItemColor: Colors.teal,
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
@@ -55,9 +57,8 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Nutrition',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb),
-            label:
-                'Conseils', // Label pour la nouvelle page des recommandations
+            icon: Icon(Icons.dashboard),
+            label: 'Tableau de bord',
           ),
         ],
       ),
@@ -72,72 +73,105 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent,
-        elevation: 4,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: const Text(
-          'Health_care',
+          'Health Tracker',
           style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
+            color: Colors.teal,
+            fontSize: 28,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              // Header Image and Title
-              Center(
-                child: Column(
-                  children: [
-                    Image.asset(
-                      'assets/images/homeimage.webp', // Update this with your image path
-                      height: 100,
-                    ),
-                    const SizedBox(height: 20),
-                    const Text(
-                      "Avis de non-responsabilité concernant la santé",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pinkAccent,
-                      ),
-                    ),
-                  ],
-                ),
+        child: SingleChildScrollView(
+          child: Container(
+            height: MediaQuery.of(context).size.height -
+                AppBar().preferredSize.height -
+                MediaQuery.of(context).padding.top,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFA7FFEB), Color(0xFF1DE9B6)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
-              const SizedBox(height: 30),
-              // Information Cards
-              Expanded(
-                child: ListView(
-                  children: [
-                    _buildInfoCard(
-                      title: "Pas un dispositif médical",
-                      description:
-                          "Cette application propose des informations générales sur la condition physique et la santé et ne remplace pas un avis médical professionnel.",
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                children: [
+                  const SizedBox(height: 40),
+                  // Header Image and Title
+                  Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 120,
+                          height: 120,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Colors.white, Colors.teal],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12.withOpacity(0.2),
+                                blurRadius: 15,
+                                offset: const Offset(0, 10),
+                              ),
+                            ],
+                          ),
+                          child: Image.asset(
+                            'assets/images/homeimage.webp', // Update this with your image path
+                            height: 100,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Avis de non-responsabilité concernant la santé",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    _buildInfoCard(
-                      title: "À titre informatif",
-                      description:
-                          "Consultez votre médecin ou professionnel de la santé avant de commencer tout nouveau programme d'exercice ou de modifier votre régime alimentaire.",
+                  ),
+                  const SizedBox(height: 30),
+                  // Information Cards
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        _buildInfoCard(
+                          title: "Pas un dispositif médical",
+                          description:
+                              "Cette application propose des informations générales sur la condition physique et la santé et ne remplace pas un avis médical professionnel.",
+                        ),
+                        const SizedBox(height: 20),
+                        _buildInfoCard(
+                          title: "À titre informatif",
+                          description:
+                              "Consultez votre médecin ou professionnel de la santé avant de commencer tout nouveau programme d'exercice ou de modifier votre régime alimentaire.",
+                        ),
+                        const SizedBox(height: 20),
+                        _buildInfoCard(
+                          title: "Limite des fonctionnalités",
+                          description:
+                              "Veuillez noter que cette application ne mesure pas la tension artérielle, la glycémie, mais peut vous aider à créer un journal de données.",
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    _buildInfoCard(
-                      title: "Limite des fonctionnalités",
-                      description:
-                          "Veuillez noter que cette application ne mesure pas la tension artérielle, la glycémie, mais peut vous aider à créer un journal de données.",
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
         ),
       ),
@@ -149,8 +183,8 @@ class HomeScreen extends StatelessWidget {
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.pinkAccent),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(color: Colors.teal),
         boxShadow: const [
           BoxShadow(
             color: Colors.black12,
@@ -167,7 +201,7 @@ class HomeScreen extends StatelessWidget {
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
-              color: Colors.pinkAccent,
+              color: Colors.teal,
             ),
           ),
           const SizedBox(height: 10),
