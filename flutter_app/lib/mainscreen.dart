@@ -3,7 +3,7 @@ import 'package:flutter_app/health_info.dart';
 import 'package:flutter_app/activity_tracking.dart';
 import 'package:flutter_app/nutrition_tracking.dart';
 import 'package:flutter_app/dashboard.dart';
-//import 'package:flutter_app/recommendations.dart'; // Importer la nouvelle page de recommandations
+import 'package:flutter_app/recommendations.dart'; // Importer la nouvelle page de recommandations
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> {
     const ActivityTrackingScreen(),
     const NutritionTrackingScreen(),
     const DashboardScreen(),
-    //const RecommendationsScreen(), // Nouvelle page de recommandations
+    const RecommendationsScreen(), // Nouvelle page de recommandations
   ];
 
   @override
@@ -59,6 +59,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
             label: 'Tableau de bord',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Recommandations',
           ),
         ],
       ),

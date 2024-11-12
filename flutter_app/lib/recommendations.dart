@@ -1,4 +1,4 @@
-/*import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -27,6 +27,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
         final userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
+            //.collection('health_data')
             .get();
 
         if (userDoc.exists) {
@@ -132,4 +133,3 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
     );
   }
 }
-*/
