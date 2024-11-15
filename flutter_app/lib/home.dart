@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 20),
                 // Header Image and Title
-                Center(
+                /* Center(
                   child: Column(
                     children: [
                       Image.asset(
@@ -46,7 +46,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                ),*/
                 const SizedBox(height: 30),
                 // Information Cards
                 _buildInfoCard(

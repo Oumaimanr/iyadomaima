@@ -64,7 +64,7 @@ class _ActivityTrackingScreenState extends State<ActivityTrackingScreen> {
           });
         } else {
           setState(() {
-            _errorMessage = "Aucune activité trouvée. Veuillez en ajouter une.";
+            //_errorMessage = "Aucune activité trouvée. Veuillez en ajouter une.";
           });
         }
       } catch (e) {
