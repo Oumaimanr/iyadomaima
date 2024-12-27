@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:flutter_app/activity_tracking.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class HealthInfoScreen extends StatefulWidget {
   const HealthInfoScreen({super.key});
@@ -35,128 +35,112 @@ class _HealthInfoScreenState extends State<HealthInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Health Tracker',
-          style: TextStyle(
-            color: Colors.teal,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height -
-                AppBar().preferredSize.height -
-                MediaQuery.of(context).padding.top,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFA7FFEB), Color(0xFF1DE9B6)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+        child: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFA7FFEB), Color(0xFF1DE9B6)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  // Header Image and Title
-                  Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [Colors.white, Colors.teal],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12.withOpacity(0.2),
-                                blurRadius: 15,
-                                offset: const Offset(0, 10),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.health_and_safety,
-                            size: 60,
-                            color: Colors.teal,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
+          ),
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 160.0,
+                floating: false,
+                pinned: true,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const Text(
+                    'Suivi de santé',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Input Fields
-                  _buildTextField(
-                    controller: _weightController,
-                    label: "Poids (kg)",
-                    icon: Icons.monitor_weight,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                    controller: _heightController,
-                    label: "Taille (cm)",
-                    icon: Icons.height,
-                  ),
-                  const SizedBox(height: 20),
-                  _buildTextField(
-                    controller: _goalController,
-                    label: "Objectif de poids (kg)",
-                    icon: Icons.flag,
-                  ),
-                  const SizedBox(height: 30),
-                  // Display Error Message if Any
-                  if (_errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: Text(
-                        _errorMessage!,
-                        style: const TextStyle(color: Colors.red),
+                  background: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.teal.shade700, Colors.teal.shade300],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
                     ),
-                  // Save Button
-                  _isLoading
-                      ? const CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        )
-                      : SizedBox(
-                          width: 300,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: _saveHealthInfo,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              elevation: 10,
-                            ),
-                            child: const Text(
-                              "Enregistrer",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.teal,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                ],
+                    child: Center(
+                      child: Icon(
+                        Icons.health_and_safety,
+                        size: 80,
+                        color: Colors.white.withOpacity(0.7),
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 40),
+                      _buildTextField(
+                        controller: _weightController,
+                        label: "Poids (kg)",
+                        icon: Icons.monitor_weight,
+                      ).animate().fadeIn(duration: 600.ms, delay: 300.ms),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        controller: _heightController,
+                        label: "Taille (cm)",
+                        icon: Icons.height,
+                      ).animate().fadeIn(duration: 600.ms, delay: 600.ms),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                        controller: _goalController,
+                        label: "Objectif de poids (kg)",
+                        icon: Icons.flag,
+                      ).animate().fadeIn(duration: 600.ms, delay: 900.ms),
+                      const SizedBox(height: 30),
+                      if (_errorMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                        ).animate().fadeIn(duration: 600.ms, delay: 1200.ms),
+                      _isLoading
+                          ? const CircularProgressIndicator(
+                              valueColor:
+                                  AlwaysStoppedAnimation<Color>(Colors.white),
+                            )
+                          : SizedBox(
+                              width: 300,
+                              height: 50,
+                              child: ElevatedButton(
+                                onPressed: _saveHealthInfo,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
+                                  ),
+                                  elevation: 10,
+                                ),
+                                child: const Text(
+                                  "Enregistrer",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.teal,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ).animate().slideY(
+                              begin: 50, duration: 600.ms, delay: 600.ms),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_app/Dashboard.dart';
 import 'package:flutter_app/health_info.dart';
 import 'package:flutter_app/activity_tracking.dart';
 import 'package:flutter_app/nutrition_tracking.dart';
-import 'package:flutter_app/dashboard.dart';
-import 'package:flutter_app/recommendations.dart'; // Importer la nouvelle page de recommandations
-import 'package:flutter_app/authentification/login.dart'; // Importer la page de connexion
+import 'package:flutter_app/recommendations.dart';
+import 'package:flutter_app/pdf.dart'; // Import the health report screen
+import 'package:flutter_app/authentification/login.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -24,7 +26,8 @@ class _MainScreenState extends State<MainScreen> {
     const ActivityTrackingScreen(),
     const NutritionTrackingScreen(),
     const DashboardScreen(),
-    const RecommendationsScreen(), // Nouvelle page de recommandations
+    const RecommendationsScreen(),
+    const PdfSummaryScreen(), // Add the health report screen
   ];
 
   @override
@@ -67,6 +70,10 @@ class _MainScreenState extends State<MainScreen> {
             icon: Icon(Icons.home),
             label: 'Recommandations',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.picture_as_pdf),
+            label: 'Rapport',
+          ),
         ],
       ),
     );
@@ -83,7 +90,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: const Text(
-          'Health Tracker',
+          'Suivi de santé',
           style: TextStyle(
             color: Colors.teal,
             fontSize: 28,
@@ -110,50 +117,30 @@ class HomeScreen extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            height: MediaQuery.of(context).size.height -
-                AppBar().preferredSize.height -
-                MediaQuery.of(context).padding.top,
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFFA7FFEB), Color(0xFF1DE9B6)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 40),
-                  const SizedBox(height: 30),
-                  // Information Cards
-                  Expanded(
-                    child: ListView(
-                      children: [
-                        _buildInfoCard(
-                          title: "Pas un dispositif médical",
-                          description:
-                              "Cette application propose des informations générales sur la condition physique et la santé et ne remplace pas un avis médical professionnel.",
-                        ),
-                        const SizedBox(height: 20),
-                        _buildInfoCard(
-                          title: "À titre informatif",
-                          description:
-                              "Consultez votre médecin ou professionnel de la santé avant de commencer tout nouveau programme d'exercice ou de modifier votre régime alimentaire.",
-                        ),
-                        const SizedBox(height: 20),
-                        _buildInfoCard(
-                          title: "Limite des fonctionnalités",
-                          description:
-                              "Veuillez noter que cette application ne mesure pas la tension artérielle, la glycémie, mais peut vous aider à créer un journal de données.",
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                ],
-              ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                _buildInfoCard(
+                  title: "Pas un dispositif médical",
+                  description:
+                      "Cette application propose des informations générales sur la condition physique et la santé et ne remplace pas un avis médical professionnel.",
+                ).animate().fadeIn(duration: 600.ms, delay: 300.ms),
+                const SizedBox(height: 20),
+                _buildInfoCard(
+                  title: "À titre informatif",
+                  description:
+                      "Consultez votre médecin ou professionnel de la santé avant de commencer tout nouveau programme d'exercice ou de modifier votre régime alimentaire.",
+                ).animate().fadeIn(duration: 600.ms, delay: 600.ms),
+                const SizedBox(height: 20),
+                _buildInfoCard(
+                  title: "Limite des fonctionnalités",
+                  description:
+                      "Veuillez noter que cette application ne mesure pas la tension artérielle, la glycémie, mais peut vous aider à créer un journal de données.",
+                ).animate().fadeIn(duration: 600.ms, delay: 900.ms),
+                const SizedBox(height: 20),
+              ],
             ),
           ),
         ),
@@ -209,10 +196,10 @@ class HomeScreen extends StatelessWidget {
         .doc(user.uid)
         .get();
 
-    final _usernameController =
+    final usernameController =
         TextEditingController(text: userData['username']);
-    final _emailController = TextEditingController(text: userData['email']);
-    final _passwordController = TextEditingController();
+    final emailController = TextEditingController(text: userData['email']);
+    final passwordController = TextEditingController();
 
     showDialog(
       context: context,
@@ -233,19 +220,19 @@ class HomeScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildTextField(
-                  controller: _usernameController,
+                  controller: usernameController,
                   label: "Username",
                   icon: Icons.person,
                 ),
                 const SizedBox(height: 20),
                 _buildTextField(
-                  controller: _emailController,
+                  controller: emailController,
                   label: "Email",
                   icon: Icons.email,
                 ),
                 const SizedBox(height: 20),
                 _buildTextField(
-                  controller: _passwordController,
+                  controller: passwordController,
                   label: "Password",
                   icon: Icons.lock,
                   isPassword: true,
@@ -263,17 +250,16 @@ class HomeScreen extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                // Save changes to Firestore
                 await FirebaseFirestore.instance
                     .collection('users')
                     .doc(user.uid)
                     .update({
-                  'username': _usernameController.text,
-                  'email': _emailController.text,
+                  'username': usernameController.text,
+                  'email': emailController.text,
                 });
 
-                if (_passwordController.text.isNotEmpty) {
-                  await user.updatePassword(_passwordController.text);
+                if (passwordController.text.isNotEmpty) {
+                  await user.updatePassword(passwordController.text);
                 }
 
                 Navigator.pop(context);

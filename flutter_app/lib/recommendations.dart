@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class RecommendationsScreen extends StatefulWidget {
-  const RecommendationsScreen({Key? key}) : super(key: key);
+  const RecommendationsScreen({super.key});
 
   @override
   _RecommendationsScreenState createState() => _RecommendationsScreenState();
@@ -38,7 +38,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           .doc(user.uid)
           .collection('health_data')
           .orderBy('timestamp', descending: true)
-          .limit(1)
+          .limit(5)
           .get()
           .then((snapshot) => snapshot.docs.first);
 
@@ -132,7 +132,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                expandedHeight: 200.0,
+                expandedHeight: 160.0,
                 floating: false,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
@@ -174,7 +174,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                             if (_bmi != null)
                               _buildInfoCard(
                                 "Votre IMC",
-                                "${_bmi!.toStringAsFixed(1)}",
+                                _bmi!.toStringAsFixed(1),
                                 Icons.monitor_weight,
                                 Colors.blue,
                               )
@@ -198,7 +198,7 @@ class _RecommendationsScreenState extends State<RecommendationsScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.teal,
                               ),
-                            ).animate().slideX(duration: 600.ms, delay: 900.ms),
+                            ).animate().fadeIn(duration: 600.ms, delay: 900.ms),
                             const SizedBox(height: 16),
                             _buildRecommendationCard(_recommendation)
                                 .animate()

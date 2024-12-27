@@ -5,7 +5,7 @@ import 'package:flutter_app/mainscreen.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({Key? key}) : super(key: key);
+  const SignUpScreen({super.key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();

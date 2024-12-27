@@ -5,7 +5,7 @@ import 'package:flutter_app/mainscreen.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -132,9 +132,9 @@ class _LoginScreenState extends State<LoginScreen>
   }
 
   Widget _buildWelcomeText() {
-    return Column(
+    return const Column(
       children: [
-        const Text(
+        Text(
           "Content de vous revoir!",
           style: TextStyle(
             fontSize: 32,
@@ -142,8 +142,8 @@ class _LoginScreenState extends State<LoginScreen>
             color: Colors.white,
           ),
         ),
-        const SizedBox(height: 10),
-        const Text(
+        SizedBox(height: 10),
+        Text(
           "Suivez votre santé en toute simplicité",
           style: TextStyle(
             fontSize: 18,
